@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializer import  RegisterSerializer, CategorySerializer,ProductSerializer,ContactSerializer,ProductupdateSerializer
+from .serializer import  RegisterSerializer, CategorySerializer,ProductSerializer,ContactSerializer,ProductupdateSerializer,productdetailSerializer,UserContactSerializer
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -61,7 +61,7 @@ class CategoryAPIView(generics.ListAPIView):
 #product
 
 class AddProductAPIView(generics.CreateAPIView):
-    #permission_classes= [IsAuthenticated,IsAdminUser]
+    permission_classes= [IsAuthenticated,IsAdminUser]
     serializer_class = ProductSerializer
 
 class ProductAPIView(generics.ListAPIView):
@@ -70,8 +70,42 @@ class ProductAPIView(generics.ListAPIView):
     filter_backends = [filters.SearchFilter]
     search_fields = ['title', 'price']
     products = Product.objects.all().order_by('price')
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
+
+#product detail api
+class ProductDetailAPIView(generics.ListAPIView):
+     queryset = Product.objects.all()
+     permission_classes = [IsAuthenticated]
+     serializer_class = productdetailSerializer
+     lookup_field = 'id'
+
+#user contact
+class UsercontactAPIView(generics.CreateAPIView):
+    serializer_class = ContactSerializer
+    permission_classes = [IsAuthenticated]
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+        return Response(serializer.data)
+
+
+class ViewUsercontactAPIVIEW(generics.ListAPIView):
+    serializer_class = UserContactSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        serializer = self.get_serializer(user)
+        queryset = Address.objects.filter(user=user)
+        print(queryset)
+        data = {
+            'user' : serializer.data,                      
+        }
+
+        return Response(data)
     
+    
+
+
   
   
    

@@ -26,13 +26,26 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = '__all__'
 
+
 class ProductupdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['title','short_description','product_image','price','discount']
 
 
+class productdetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model =Product
+        fields =['title','short_description','product_image','price','discount']
+
+
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model =Address
         fields = '__all__'
+
+class UserContactSerializer(serializers.ModelSerializer):
+    address=ContactSerializer(source = 'user',many =True)
+    class Meta:
+        model =User
+        fields = ['username','address']
