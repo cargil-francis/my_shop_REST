@@ -20,7 +20,7 @@ class Product(models.Model):
     short_description = models.TextField(verbose_name="Short Description")
     product_image = models.ImageField(upload_to='product', blank=True, null=True, verbose_name="Product Image")
     price = models.DecimalField(max_digits=8, decimal_places=2)
-    discount = models.DecimalField(max_digits=10,decimal_places=2)
+    # discount = models.DecimalField(max_digits=10,decimal_places=2)
     category = models.ForeignKey(Category, verbose_name="Product Categoy", on_delete=models.CASCADE)
     is_active = models.BooleanField(verbose_name="Is Active?",default=True)
     is_featured = models.BooleanField(verbose_name="Is Featured?",default=True)
@@ -29,6 +29,22 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+
+
+
+class Discount(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    percentage = models.IntegerField()
+
+    def __str__(self):
+        return self.title
+
+class Offer(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    discount = models.ForeignKey(Discount, on_delete=models.CASCADE)
+    start_date = models.DateField()
+    end_date = models.DateField()
 
 class Address(models.Model):
     user = models.ForeignKey(User, verbose_name="User", on_delete=models.CASCADE, related_name='user')
