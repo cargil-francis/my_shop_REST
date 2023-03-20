@@ -11,8 +11,7 @@ class Category(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created Date")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated Date")
 
-    def __str__(self):
-        return self.title
+
 
 class Product(models.Model):
     title = models.CharField(max_length=150, verbose_name="Product Title")
@@ -20,16 +19,12 @@ class Product(models.Model):
     short_description = models.TextField(verbose_name="Short Description")
     product_image = models.ImageField(upload_to='product', blank=True, null=True, verbose_name="Product Image")
     price = models.DecimalField(max_digits=8, decimal_places=2)
-    # discount = models.DecimalField(max_digits=10,decimal_places=2)
+    # discount = models.DecimalField(max_digits=10,decimal_places=2, default=0)
     category = models.ForeignKey(Category, verbose_name="Product Categoy", on_delete=models.CASCADE)
     is_active = models.BooleanField(verbose_name="Is Active?",default=True)
     is_featured = models.BooleanField(verbose_name="Is Featured?",default=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created Date")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated Date")
-
-    def __str__(self):
-        return self.title
-
 
 
 class Discount(models.Model):
@@ -37,8 +32,7 @@ class Discount(models.Model):
     description = models.TextField()
     percentage = models.IntegerField()
 
-    def __str__(self):
-        return self.title
+
 
 class Offer(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -51,10 +45,9 @@ class Address(models.Model):
     locality = models.CharField(max_length=150, verbose_name="Nearest Location")
     city = models.CharField(max_length=150, verbose_name="City")
     state = models.CharField(max_length=150, verbose_name="State")
-    phone = models.IntegerField(max_length=10,verbose_name="Contact")
+    phone = models.IntegerField(verbose_name="Contact")
 
-    def __str__(self):
-        return self.locality
+
 
 STATUS_CHOICES = (
     ('Pending', 'Pending'),
@@ -74,11 +67,11 @@ class Order(models.Model):
         max_length=50,
         default="Pending"
         )
-    def __str__(self):
-        return str(self.user)
-    
 
-    
+
+
+
+
 
 class Cart(models.Model):
     user = models.ForeignKey(User, verbose_name="User", on_delete=models.CASCADE)
@@ -86,10 +79,5 @@ class Cart(models.Model):
     quantity = models.PositiveIntegerField(default=1, verbose_name="Quantity")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created Date")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated Date")
-
-    def __str__(self):
-        return str(self.user)
-
-
 
 

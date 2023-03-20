@@ -203,87 +203,25 @@ class TokenBlacklistView(APIView):
 
 
 #cart
-
-# class AddToCart(APIView):
-#     def post(self, request, product_id):
-#         # Check if the product exists
-#         product = get_object_or_404(Product, id=product_id)
-
-#         # Get the cart or create a new one if it doesn't exist
-#         cart, created = Cart.objects.get_or_create(user=request.user)
-
-#         # Check if the product is already in the cart
-#         if cart.products.filter(id=product.id).exists():
-#             return Response({"error": "Product is already in the cart"}, status=status.HTTP_400_BAD_REQUEST)
-
-#         # Add the product to the cart
-#         # cart.products.add(product)
-#         cart.add_product(product)
-
-#         # Serialize the cart and return it
-#         serializer = CartSerializer(cart)
-#         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-
-
-# class AddToCart(APIView):
-#     permission_classes = [IsAuthenticated]
-#     serializer_class = CartSerializer
-
-#     def post(self, request, id):
-#         product = Product.objects.get(pk=id)
-#         # cart, created = Cart.objects.get_or_create(user=request.user)
-#         serializer = CartSerializer(data=request.data)
-#         if serializer.is_valid():
-#             quantity = serializer.validated_data['quantity']
-#             # Check if item is already in the cart
-#             try:
-#                 cart_item= Cart.objects.get(product=product)
-#                 cart_item.quantity += quantity
-#                 cart_item.save()
-#             except Cart.DoesNotExist:
-#                 # Add item to cart
-#                 cart_item = Cart(product=product, quantity=quantity)
-#                 cart_item.quantity = quantity
-#                 cart_item.save()
-            
-#             # return Response(status=status.HTTP_201_CREATED)
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         else:
-#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
 class AddToCartView(CreateAPIView):
     serializer_class = CartSerializer
     permission_classes = [IsAuthenticated]
 
 
+#checkout
 
 
-
-
-# class Checkout(APIView):
-#     def post(self, request):
-#         # Get the user's cart
-#         cart = get_object_or_404(Cart, user=request.user)
-        
-#         # Create an order from the cart
-#         order = Order.objects.create(user=request.user, total_price=cart.total_price())
-        
-#         # Move items from the cart to the order
-#         for item in cart.items.all():
-#             order.items.create(product=item.product, quantity=item.quantity, price=item.price)
-#             item.delete()
-        
-#         # Send email to user
-#         subject = 'Order Confirmation'
-#         message = f'Thank you for your order! Your order ID is {order.id}.'
-#         from_email = settings.DEFAULT_FROM_EMAIL
-#         to_email = request.user.email
-#         send_mail(subject, message, from_email, [to_email], fail_silently=False)
-        
-#         # Serialize the order and send response
-#         serializer = OrderSerializer(order)
-#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+# class CheckoutSerializer(serializers.Serializer):
+#     # fields for checkout
+    
+#     def create(self, validated_data):
+#         # perform checkout process
+#         user = self.context['request'].user
+#         send_mail(
+#             'Checkout Confirmation',
+#             'Thank you for your purchase!',
+#             'your_email@example.com',
+#             [user.email],
+#             html_message='<p>Thank you for your purchase!</p>'
+#         )
+#         return validated_data

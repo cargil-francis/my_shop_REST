@@ -112,19 +112,7 @@ class OfferSerializer(serializers.ModelSerializer):
 
         return offer
 
-# serializers.StringRelatedField(many=True) 
 
-# class CartSerializer(serializers.ModelSerializer):
-#     # product =   serializers.SlugRelatedField(
-#     #     many=True,
-#     #     read_only=True,
-#     #     slug_field='title'
-#     # )
-
-
-#     class Meta:
-#         model = Cart
-#         fields = ['id', 'product','quantity']
 
 
 class CartSerializer(serializers.ModelSerializer):
@@ -140,17 +128,27 @@ class CartSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         print(user)
         # product = Product.objects.get(id=product_id)
+        prd = Product.objects.get(id = product_id)
+        print("prd object ivde" ,prd)
+
         product = get_object_or_404(Product, id=product_id)
         print("product object ivde" ,product)
     
         quantity = validated_data['quantity']
+        print(quantity)
 
-        # cart,created= Cart.objects.get_or_create(user=user, product=product)
-        # print(cart)
-        # if not created:
-        #     cart.quantity += quantity
-        #     cart.save()
-        # return cart
+        cart,created= Cart.objects.get_or_create(user=user, product=prd)
+        print(cart,created)
+        if not created:
+            cart.quantity += quantity
+            cart.save()
+        return cart
+
+
+
+
+# class CheckoutAPIView(generics.CreateAPIView):
+#     serializer_class = CheckoutSerializer
 
 
 
