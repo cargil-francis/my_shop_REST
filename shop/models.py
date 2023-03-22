@@ -19,12 +19,18 @@ class Product(models.Model):
     short_description = models.TextField(verbose_name="Short Description")
     product_image = models.ImageField(upload_to='product', blank=True, null=True, verbose_name="Product Image")
     price = models.DecimalField(max_digits=8, decimal_places=2)
-    # discount = models.DecimalField(max_digits=10,decimal_places=2, default=0)
     category = models.ForeignKey(Category, verbose_name="Product Categoy", on_delete=models.CASCADE)
     is_active = models.BooleanField(verbose_name="Is Active?",default=True)
     is_featured = models.BooleanField(verbose_name="Is Featured?",default=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created Date")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated Date")
+
+    def get_discount_percentage(self):
+        try:
+            offer = Offer.objects.filter(product=self, start_date__lte=timezone.now(), end_date__gte=timezone.now()).first()
+            return offer.discount.percentage
+        except:
+            return None
 
 
 class Discount(models.Model):
@@ -67,6 +73,10 @@ class Order(models.Model):
         max_length=50,
         default="Pending"
         )
+
+    @property
+    def total_price(self):
+        return self.quantity * self.product.price
 
 
 

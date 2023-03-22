@@ -1,5 +1,6 @@
-from ..models import User,Category,Product,Address,Offer,Discount,Cart
+from ..models import User,Category,Product,Address,Offer,Discount,Cart, Order
 from django.shortcuts import get_object_or_404
+from django.core.mail import send_mail
 
 from rest_framework import serializers
 
@@ -147,8 +148,20 @@ class CartSerializer(serializers.ModelSerializer):
 
 
 
-# class CheckoutAPIView(generics.CreateAPIView):
-#     serializer_class = CheckoutSerializer
+# class CheckoutSerializer(serializers.Serializer):
+#     # fields for checkout
+    
+#     def create(self, validated_data):
+#         # perform checkout process
+#         user = self.context['request'].user
+#         send_mail(
+#             'Checkout Confirmation',
+#             'Thank you for your purchase!',
+#             'your_email@example.com',
+#             [user.email],
+#             html_message='<p>Thank you for your purchase!</p>'
+#         )
+#         return validated_data
 
 
 
@@ -165,3 +178,18 @@ class CartSerializer(serializers.ModelSerializer):
 #         model = Order
 #         fields = ['id', 'user', 'items', 'total', 'created_at']
 #         read_only_fields = ['id', 'user', 'total', 'created_at']
+
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = ('id', 'locality', 'city', 'state', 'phone')
+
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    items = CartSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Order
+        fields = ('id', 'product', 'user', 'address', 'quantity', 'status', 'items', 'ordered_date')

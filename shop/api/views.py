@@ -1,11 +1,15 @@
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializer import  RegisterSerializer, CategorySerializer,ProductSerializer,ContactSerializer,ProductupdateSerializer,productdetailSerializer,UserContactSerializer,DiscountSerializer,OfferSerializer,CartSerializer
+from .serializer import  (RegisterSerializer, CategorySerializer
+,ProductSerializer,ContactSerializer,ProductupdateSerializer,
+productdetailSerializer,UserContactSerializer,DiscountSerializer,
+OfferSerializer,CartSerializer,
+AddressSerializer, OrderSerializer)
 from rest_framework import generics,status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAdminUser,IsAuthenticated
-from shop.models import Category ,Product,Address,Offer,Cart
+from shop.models import Category ,Product,Address,Offer,Cart, Order
 from rest_framework .generics import DestroyAPIView,RetrieveUpdateDestroyAPIView,ListAPIView,CreateAPIView
 from rest_framework import filters
 from django.shortcuts import get_object_or_404
@@ -208,20 +212,57 @@ class AddToCartView(CreateAPIView):
     permission_classes = [IsAuthenticated]
 
 
+
 #checkout
 
+# class CheckoutAPIView(generics.CreateAPIView):
+#     serializer_class = CheckoutSerializer
 
-# class CheckoutSerializer(serializers.Serializer):
-#     # fields for checkout
-    
-#     def create(self, validated_data):
-#         # perform checkout process
-#         user = self.context['request'].user
-#         send_mail(
-#             'Checkout Confirmation',
-#             'Thank you for your purchase!',
-#             'your_email@example.com',
-#             [user.email],
-#             html_message='<p>Thank you for your purchase!</p>'
-#         )
-#         return validated_data
+
+
+class CartCheckoutView(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = OrderSerializer
+
+    def post(self, request, *args, **kwargs):
+        cart_items = Cart.objects.filter(user=request.user)
+        if cart_items:
+            for cart_item in cart_items:
+                print(cart_item.quantity)
+            total_cost = sum(item.product.price * item.quantity for item in cart_items)
+            print(total_cost)
+
+            if 'address' in request.data:
+                address_data = request.data['address']
+                print(address_data)
+                address = Address.objects.create(
+                    user=request.user,
+                    locality=address_data['locality'],
+                    city=address_data['city'],
+                    state=address_data['state'],
+                    phone=address_data['phone']
+                )
+            else:
+                address = Address.objects.filter(user=request.user).last()
+                print(address, "Address")
+
+            # order = Order.objects.create(user=request.user, address=address)
+
+            for item in cart_items:
+                print(item.quantity, "quantity thaazhe")
+                order = Order.objects.create(product=item.product, quantity=item.quantity, address=address, user= request.user)
+
+            cart_items.delete()
+
+            send_mail(
+                'Order Confirmaton',
+                'It is to inform that your order ahs been placed.',
+                'from@example.com',
+                ['kitty.f9876@gmail.com'],
+                fail_silently=False,
+            )
+
+            serializer = OrderSerializer(order)
+            return Response(serializer.data)
+        else:
+            return Response("Your cart is empty. Please add some products to checkout")

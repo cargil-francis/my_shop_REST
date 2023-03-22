@@ -1,7 +1,7 @@
 
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
-from .views import  RegisterAPIView,AddCategoryAPIView,CategoryAPIView,AddProductAPIView,ProductAPIView,admincontactAPIView,contactAPIVIEW
+from .views import  RegisterAPIView,AddCategoryAPIView,CategoryAPIView,AddProductAPIView,ProductAPIView,admincontactAPIView,contactAPIVIEW,CartCheckoutView
 from .views import  updateProductAPIView,ProductDeleteview,ProductDetailAPIView,UsercontactAPIView,ViewUsercontactAPIVIEW,OfferProductAPIVIEW,CreateofferAPIVIEW,CreatediscountAPIVIEW,AddToCartView
 
 urlpatterns = [
@@ -18,6 +18,7 @@ urlpatterns = [
     path('offerproduct/',OfferProductAPIVIEW.as_view(), name ='offerproducts'),
     path('creatediscount/',CreatediscountAPIVIEW.as_view(),name ='discount'),
     path('addcart/',AddToCartView.as_view(),name = 'addtocart'),
+    path('checkout/',CartCheckoutView.as_view(),name ='checkout'),
 
 
     
