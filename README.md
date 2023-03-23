@@ -27,8 +27,8 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-MY_Quiz_Application_Rest is a python project created using DjangoRestframework.
-An Online Quiz Application with  Admin and Users. Various features are included in the project
+my_shop_REST is a python project created using DjangoRestframework.
+An Online Ecommerce application with  Admin and Users. Various features are included in the project like  product category,product, offersand discount,add to cart, checkout etc.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
