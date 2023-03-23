@@ -125,6 +125,13 @@ Screenshots of the project using Postman
 
 ![Screenshot from 2023-03-23 20-47-17](https://user-images.githubusercontent.com/96044398/227260311-22aa2e92-145c-4c50-afcc-edd14fecb877.png)
 
+*Create Discount
+
+![Screenshot from 2023-03-23 22-03-39](https://user-images.githubusercontent.com/96044398/227276763-d9435c71-2dc6-4e67-a2f1-c07b85869462.png)
+
+*Offer
+
+![Screenshot from 2023-03-23 22-03-39](https://user-images.githubusercontent.com/96044398/227277210-381de986-e863-42a2-8bfb-a007b038f286.png)
 
 *Add to cart
 
